@@ -52,8 +52,6 @@ public class Adapter extends BaseAdapter {
 
         // get data from items list
         Item item = mItems.get(position);
-        // imageLink
-        String imageLink = item.getImage();
         // rocketName
         rocketNameView.setText(item.getRocketName());
         // launchDate
