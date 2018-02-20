@@ -10,7 +10,8 @@ public class Item {
     private String mrocketName,
                    mlaunchDate,
                    mdetails,
-                   mimage;
+                   mimage,
+                   marticleLink;
     private Bitmap mbimtmap;
 
     public String getRocketName(){
@@ -27,6 +28,10 @@ public class Item {
 
     public String getImage() {
         return mimage;
+    }
+
+    public String getArticleLink(){
+        return marticleLink;
     }
 
     public Bitmap getBitmap(){
@@ -48,6 +53,10 @@ public class Item {
 
     public void setImage(String image) {
         mimage = image;
+    }
+
+    public void setArticleLink(String articleLink){
+        marticleLink = articleLink;
     }
 
     public void setBitmap(Bitmap bitmap){

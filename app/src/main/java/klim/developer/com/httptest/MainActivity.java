@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ParseException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setPrompt("select year");
         spinner.setSelection(0);
 
+        // changes url according to selected year
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -113,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
                 getDataTask = new GetDataTask();
                 getDataTask.execute(url);
 
+            }
+        });
+
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String linkToOpen = array.get(position).getArticleLink();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(linkToOpen));
+                startActivity(intent);
             }
         });
     }
@@ -192,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     // links, содержит в себе нужный нам mission_patch
                     JSONObject links = launch.getJSONObject("links");
                     String imageLink = links.getString("mission_patch");
+                    String articleLink = links.getString("article_link");
 
                     // rocket, содержит в себе rocket_name
                     JSONObject rocket = launch.getJSONObject("rocket");
@@ -217,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     item.setLaunchDate(formattedLaunchDate);
                     item.setDetails(details);
                     item.setImage(imageLink);
+                    item.setArticleLink(articleLink);
                     imageLinks[i] = imageLink;
 
                     array.add(item);
