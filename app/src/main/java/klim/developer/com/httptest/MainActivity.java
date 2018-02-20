@@ -250,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
      * in method onPostExecute creates adapter and sets it to listView
      */
     public class  GetBitmapArrayTask extends AsyncTask<String, Void, Bitmap[]> {
-        // ImageView imgV;
         private Bitmap[] mbitmaps;
 
         public GetBitmapArrayTask(){
@@ -278,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap[] bitmaps) {
             super.onPostExecute(bitmaps);
+
             for(int i = 0; i < array.size(); i++) {
                 array.get(i).setBitmap(mbitmaps[i]);
             }
