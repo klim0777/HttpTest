@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private String mUrl = "https://api.spacexdata.com/v2/launches?launch_year=2017";
     private String mUrlBase = "https://api.spacexdata.com/v2/launches?launch_year=";
 
-    final Activity ac = this;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String urlAdd = String.valueOf(2006+position);
+                // selected item position + 2006 == selected year
+                String urlAdd = String.valueOf(2006 + position);
                 mUrl = mUrlBase + urlAdd;
             }
 
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         // get JSONArray
         @Override
-        protected JSONArray doInBackground(String... link){
+        protected JSONArray doInBackground(String... link) {
 
             HttpURLConnection connection = null;
             BufferedReader reader = null;
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
                 String line ="";
-                while ((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
 
@@ -160,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
                 // make JsonArray from response
                 response = new JSONArray(finalJson);
-                Log.d("My log","array created");
 
                 return response;
 
@@ -251,10 +249,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public class  GetBitmapArrayTask extends AsyncTask<String, Void, Bitmap[]> {
         private Bitmap[] mbitmaps;
-
-        public GetBitmapArrayTask(){
-        }
-
+        
         @Override
         protected Bitmap[] doInBackground(String[] url) {
             mbitmaps = new Bitmap[mImageLinks.length];
@@ -284,9 +279,9 @@ public class MainActivity extends AppCompatActivity {
 
             mDialog.cancel();
 
-           // Activity host = (Activity) getApplicationContext();
+            Activity activity = (Activity) MainActivity.this;
 
-            mAdapter = new Adapter(ac, mArray);
+            mAdapter = new Adapter(activity, mArray);
             mListView.setAdapter(mAdapter);
         }
     }
