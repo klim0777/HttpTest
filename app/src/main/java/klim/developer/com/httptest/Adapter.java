@@ -16,10 +16,6 @@ import android.widget.TextView;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * Created by User on 14.02.2018.
- */
-
 public class Adapter extends BaseAdapter {
 
     private LayoutInflater inflater;

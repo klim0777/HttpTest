@@ -41,7 +41,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
-    private Button getButton, showButton;
+    private Button   getButton, showButton;
     private ListView listView;
 
     private static List<Item> array = new ArrayList<>();
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Adapter adapter;
 
-    private GetData getData;
-    private GetBitmapArray getBitmapArray;
+    private GetDataTask getDataTask;
+    private GetBitmapArrayTask getBitmapArrayTask;
 
     String url = "https://api.spacexdata.com/v2/launches?launch_year=2017";
 
@@ -66,30 +66,23 @@ public class MainActivity extends AppCompatActivity {
         showButton = (Button) findViewById(R.id.showButton);
         listView = (ListView) findViewById(R.id.listView);
 
-
-
         getButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 array.clear();
-                getData = new GetData();
-                getData.execute(url);
-
-
+                getDataTask = new GetDataTask();
+                getDataTask.execute(url);
             }
         });
 
         showButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textView.append(String.valueOf(array.size()));
-                getBitmapArray = new GetBitmapArray();
-                getBitmapArray.execute(imageLinks);
-
+                getBitmapArrayTask = new GetBitmapArrayTask();
+                getBitmapArrayTask.execute(imageLinks);
 
                 adapter = new Adapter(ac, array);
                 listView.setAdapter(adapter);
-
             }
         });
 
@@ -99,14 +92,16 @@ public class MainActivity extends AppCompatActivity {
     /***
      *
      */
-    public class GetData extends AsyncTask<String, Void, JSONArray> {
+    public class GetDataTask extends AsyncTask<String, Void, JSONArray> {
 
+        // get JSONArray
         @Override
         protected JSONArray doInBackground(String... link){
 
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             JSONArray response = new JSONArray();
+
             try {
                 URL url = new URL(link[0]);
                 connection = (HttpURLConnection) url.openConnection();
@@ -149,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             return  null;
         }
 
+        // get data from loaded JSONArray
         @Override
         protected void onPostExecute(JSONArray response) {
             super.onPostExecute(response);
@@ -194,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
                     imageLinks[i] = imageLink;
 
                     array.add(item);
-                    // adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -205,28 +200,20 @@ public class MainActivity extends AppCompatActivity {
     }//GetData
 
     //Class for download IMAGE
-    public class  GetBitmapArray extends AsyncTask<String, Void, Bitmap[]> {
+    public class  GetBitmapArrayTask extends AsyncTask<String, Void, Bitmap[]> {
         // ImageView imgV;
         private Bitmap[] mbitmaps;
 
-        public GetBitmapArray(){
-           // this.imgV = imgV;
+        public GetBitmapArrayTask(){
         }
-
-        /*
-        public Bitmap[] getBitmaps() {
-            return mbitmaps;
-        }*/
-
 
         @Override
         protected Bitmap[] doInBackground(String[] url) {
             mbitmaps = new Bitmap[imageLinks.length];
 
-            for(int i = 0; i < imageLinks.length; i++) {
+            for (int i = 0; i < imageLinks.length; i++) {
                 String currentUrl = url[i];
                 Bitmap bitmap = null;
-
                 try {
                     InputStream inputStream = new java.net.URL(currentUrl).openStream();
                     bitmap = BitmapFactory.decodeStream(inputStream);
@@ -234,31 +221,16 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
+
             return mbitmaps;
-
-            /*
-            String urldisplay = url[0];
-            Bitmap bitmap = null;
-            try {
-                InputStream srt = new java.net.URL(urldisplay).openStream();
-                bitmap = BitmapFactory.decodeStream(srt);
-                //imgV.setImageBitmap(bitmap);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            return bitmap;*/
         }
 
         @Override
         protected void onPostExecute(Bitmap[] bitmaps) {
             super.onPostExecute(bitmaps);
-            //imgV.setImageBitmap(bitmap);
             for(int i = 0; i < array.size(); i++) {
                 array.get(i).setBitmap(mbitmaps[i]);
-                Log.e("My LOG",array.get(i).getRocketName());
-                Log.e("My log", String.valueOf(mbitmaps.length));
             }
         }
     }
