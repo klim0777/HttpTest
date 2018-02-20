@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -41,7 +43,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
-    private Button   getButton, showButton;
+    private Button   getButton;
     private ListView listView;
 
     private static List<Item> array = new ArrayList<>();
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private GetDataTask getDataTask;
     private GetBitmapArrayTask getBitmapArrayTask;
+
+    private ProgressDialog dialog;
 
     String url = "https://api.spacexdata.com/v2/launches?launch_year=2017";
 
@@ -63,34 +67,30 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
         getButton = (Button) findViewById(R.id.getButton);
-        showButton = (Button) findViewById(R.id.showButton);
         listView = (ListView) findViewById(R.id.listView);
 
         getButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                dialog = new ProgressDialog(MainActivity.this);
+                dialog.setTitle("Wait please");
+                dialog.setMessage("Downloading data");
+                dialog.show();
+
                 array.clear();
+
                 getDataTask = new GetDataTask();
                 getDataTask.execute(url);
+
             }
         });
-
-        showButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getBitmapArrayTask = new GetBitmapArrayTask();
-                getBitmapArrayTask.execute(imageLinks);
-
-                adapter = new Adapter(ac, array);
-                listView.setAdapter(adapter);
-            }
-        });
-
     }
 
 
     /***
-     *
+     * onPostExecute creates GetBitMapArrayTask object
+     * and calls .execute
      */
     public class GetDataTask extends AsyncTask<String, Void, JSONArray> {
 
@@ -195,11 +195,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            getBitmapArrayTask = new GetBitmapArrayTask();
+            getBitmapArrayTask.execute(imageLinks);
+
         }// onPostExecute
 
     }//GetData
 
-    //Class for download IMAGE
+    /***
+     * in method onPostExecute creates adapter and sets it to listView
+     */
     public class  GetBitmapArrayTask extends AsyncTask<String, Void, Bitmap[]> {
         // ImageView imgV;
         private Bitmap[] mbitmaps;
@@ -232,6 +237,11 @@ public class MainActivity extends AppCompatActivity {
             for(int i = 0; i < array.size(); i++) {
                 array.get(i).setBitmap(mbitmaps[i]);
             }
+
+            dialog.cancel();
+
+            adapter = new Adapter(ac, array);
+            listView.setAdapter(adapter);
         }
     }
 

@@ -8,9 +8,9 @@ import android.graphics.Bitmap;
 
 public class Item {
     private String mrocketName,
-            mlaunchDate,
-            mdetails,
-            mimage;
+                   mlaunchDate,
+                   mdetails,
+                   mimage;
     private Bitmap mbimtmap;
 
     public String getRocketName(){
@@ -29,7 +29,7 @@ public class Item {
         return mimage;
     }
 
-    public Bitmap getBimtmap(){
+    public Bitmap getBitmap(){
         return mbimtmap;
     }
 

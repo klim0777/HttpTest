@@ -2,10 +2,6 @@ package klim.developer.com.httptest;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class Adapter extends BaseAdapter {
@@ -44,29 +39,30 @@ public class Adapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(inflater == null){
-            inflater=(LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if(convertView == null){
             convertView = inflater.inflate(R.layout.custom_layout,null);
         }
-        TextView rocketName= (TextView) convertView.findViewById(R.id.tvRocketName);
-        TextView launchDate= (TextView) convertView.findViewById(R.id.tvLaunchDate);
-        TextView details= (TextView) convertView.findViewById(R.id.tvDetails);
-        ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+        TextView rocketNameView = (TextView) convertView.findViewById(R.id.tvRocketName);
+        TextView launchDateView = (TextView) convertView.findViewById(R.id.tvLaunchDate);
+        TextView detailsView = (TextView) convertView.findViewById(R.id.tvDetails);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
 
 
         // get data from items list
-        Item item=items.get(position);
+        Item item = items.get(position);
         // imageLink
         String imageLink = item.getImage();
         // rocketName
-        rocketName.setText(item.getRocketName());
+        rocketNameView.setText(item.getRocketName());
         // launchDate
-        launchDate.setText(item.getLaunchDate());
+        launchDateView.setText(item.getLaunchDate());
         // details
-        details.setText(item.getDetails());
+        detailsView.setText(item.getDetails());
         // set Bitmap to imageView
-        image.setImageBitmap(item.getBimtmap());
+        imageView.setImageBitmap(item.getBitmap());
+
         return convertView;
     }
 }
