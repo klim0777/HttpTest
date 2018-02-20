@@ -45,26 +45,26 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button   getButton;
-    private ListView listView;
-    private Spinner spinner;
+    private Button   mGetButton;
+    private ListView mListView;
+    private Spinner mSpinner;
 
-    private static List<Item> array = new ArrayList<>();
-    private String[] imageLinks;
+    private static List<Item> mArray = new ArrayList<>();
+    private String[] mImageLinks;
 
-    private Adapter adapter;
+    private Adapter mAdapter;
 
-    private GetDataTask getDataTask;
-    private GetBitmapArrayTask getBitmapArrayTask;
+    private GetDataTask mGetDataTask;
+    private GetBitmapArrayTask mGetBitmapArrayTask;
 
-    private ProgressDialog dialog;
+    private ProgressDialog mDialog;
 
-    private String[] years = {"2006","2007","2008","2009","2010","2011",
+    private String[] mYears = {"2006","2007","2008","2009","2010","2011",
                               "2012","2013","2014","2015","2016","2017",
                               "2018"};
 
-    private String url = "https://api.spacexdata.com/v2/launches?launch_year=2017";
-    private String urlBase = "https://api.spacexdata.com/v2/launches?launch_year=";
+    private String mUrl = "https://api.spacexdata.com/v2/launches?launch_year=2017";
+    private String mUrlBase = "https://api.spacexdata.com/v2/launches?launch_year=";
 
     final Activity ac = this;
 
@@ -73,25 +73,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getButton = (Button) findViewById(R.id.getButton);
-        listView = (ListView) findViewById(R.id.listView);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        mGetButton = (Button) findViewById(R.id.getButton);
+        mListView = (ListView) findViewById(R.id.listView);
+        mSpinner = (Spinner) findViewById(R.id.spinner);
 
         // adapter for spinner
         ArrayAdapter<String> spinnerAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mYears);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setPrompt("select year");
-        spinner.setSelection(0);
+        mSpinner.setAdapter(spinnerAdapter);
+        mSpinner.setPrompt("select year");
+        mSpinner.setSelection(0);
 
         // changes url according to selected year
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String urlAdd = String.valueOf(2006+position);
-                url = urlBase + urlAdd;
+                mUrl = mUrlBase + urlAdd;
             }
 
             @Override
@@ -101,27 +101,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        getButton.setOnClickListener(new View.OnClickListener() {
+        mGetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                dialog = new ProgressDialog(MainActivity.this);
-                dialog.setTitle("Wait please");
-                dialog.setMessage("Downloading data");
-                dialog.show();
+                mDialog = new ProgressDialog(MainActivity.this);
+                mDialog.setTitle("Wait please");
+                mDialog.setMessage("Downloading data");
+                mDialog.show();
 
-                array.clear();
+                mArray.clear();
 
-                getDataTask = new GetDataTask();
-                getDataTask.execute(url);
+                mGetDataTask = new GetDataTask();
+                mGetDataTask.execute(mUrl);
 
             }
         });
 
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String linkToOpen = array.get(position).getArticleLink();
+                String linkToOpen = mArray.get(position).getArticleLink();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(linkToOpen));
                 startActivity(intent);
@@ -190,57 +190,57 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONArray response) {
             super.onPostExecute(response);
-            imageLinks = new String[response.length()];
+            mImageLinks = new String[response.length()];
 
             for(int i = 0; i < response.length(); i++) {
                 try {
                     JSONObject launch = response.getJSONObject(i);
 
-                    String flight_number = launch.getString("flight_number");
-
-                    // достаем details
+                    // get details
                     String details = launch.getString("details");
 
-                    // links, содержит в себе нужный нам mission_patch
+                    // links JSONObject contains imageLink and articleLink
                     JSONObject links = launch.getJSONObject("links");
                     String imageLink = links.getString("mission_patch");
                     String articleLink = links.getString("article_link");
 
-                    // rocket, содержит в себе rocket_name
+                    // rocket JSONOnbject contains rocket_name
                     JSONObject rocket = launch.getJSONObject("rocket");
                     String rocketName = rocket.getString("rocket_name");
 
-                    // достаем время запуска ракеты и конвертируем в long
+                    // get launchDate and convert to long
                     String launchDateUnix = launch.getString("launch_date_unix");
                     long launchTime = Long.parseLong(launchDateUnix);
 
-                    // конвертируем секунды launch_time в миллисекунды
+                    // convert launchTime to ms
                     final Date date = new Date(launchTime * 1000L);
-                    // формат времени-даты
+
                     SimpleDateFormat dateFormat =
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    // задание тайм-зоны
+                    // Set time-zone
                     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+3"));
-                    // форматирование date
+                    // formatting date
                     String formattedLaunchDate = dateFormat.format(date);
 
-                    // сохранение загруженной информации
+                    // save loaded data to item
                     Item item  = new Item();
                     item.setRocketName(rocketName);
                     item.setLaunchDate(formattedLaunchDate);
                     item.setDetails(details);
                     item.setImage(imageLink);
                     item.setArticleLink(articleLink);
-                    imageLinks[i] = imageLink;
+                    // save imageLink separately to mImageLinks array
+                    // just for sending array as parameter to mGetBitmapArrayTask
+                    mImageLinks[i] = imageLink;
 
-                    array.add(item);
+                    mArray.add(item);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-            getBitmapArrayTask = new GetBitmapArrayTask();
-            getBitmapArrayTask.execute(imageLinks);
+            mGetBitmapArrayTask = new GetBitmapArrayTask();
+            mGetBitmapArrayTask.execute(mImageLinks);
 
         }// onPostExecute
 
@@ -257,9 +257,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap[] doInBackground(String[] url) {
-            mbitmaps = new Bitmap[imageLinks.length];
+            mbitmaps = new Bitmap[mImageLinks.length];
 
-            for (int i = 0; i < imageLinks.length; i++) {
+            for (int i = 0; i < mImageLinks.length; i++) {
                 String currentUrl = url[i];
                 Bitmap bitmap = null;
                 try {
@@ -278,14 +278,16 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap[] bitmaps) {
             super.onPostExecute(bitmaps);
 
-            for(int i = 0; i < array.size(); i++) {
-                array.get(i).setBitmap(mbitmaps[i]);
+            for(int i = 0; i < mArray.size(); i++) {
+                mArray.get(i).setBitmap(mbitmaps[i]);
             }
 
-            dialog.cancel();
+            mDialog.cancel();
 
-            adapter = new Adapter(ac, array);
-            listView.setAdapter(adapter);
+           // Activity host = (Activity) getApplicationContext();
+
+            mAdapter = new Adapter(ac, mArray);
+            mListView.setAdapter(mAdapter);
         }
     }
 

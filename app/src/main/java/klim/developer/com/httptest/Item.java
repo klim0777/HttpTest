@@ -7,61 +7,60 @@ import android.graphics.Bitmap;
  */
 
 public class Item {
-    private String mrocketName,
-                   mlaunchDate,
-                   mdetails,
-                   mimage,
-                   marticleLink;
-    private Bitmap mbimtmap;
+    private String mRocketName,
+                   mLaunchDate,
+                   mDetails,
+                   mImage,
+                   mArticleLink;
+    private Bitmap mBimtmap;
 
     public String getRocketName(){
-        return mrocketName;
+        return mRocketName;
     }
 
     public String getLaunchDate(){
-        return  mlaunchDate;
+        return  mLaunchDate;
     }
 
     public String getDetails(){
-        return mdetails;
+        return mDetails;
     }
 
     public String getImage() {
-        return mimage;
+        return mImage;
     }
 
     public String getArticleLink(){
-        return marticleLink;
+        return mArticleLink;
     }
 
     public Bitmap getBitmap(){
-        return mbimtmap;
+        return mBimtmap;
     }
 
 
-    public void setRocketName(String rocket_name){
-        mrocketName = rocket_name;
+    public void setRocketName(String rocketName){
+        mRocketName = rocketName;
     }
 
-    public void setLaunchDate(String launch_date){
-        mlaunchDate = launch_date;
+    public void setLaunchDate(String launchDate){
+        mLaunchDate = launchDate;
     }
 
     public void setDetails(String details){
-        mdetails = details;
+        mDetails = details;
     }
 
     public void setImage(String image) {
-        mimage = image;
+        mImage = image;
     }
 
     public void setArticleLink(String articleLink){
-        marticleLink = articleLink;
+        mArticleLink = articleLink;
     }
 
     public void setBitmap(Bitmap bitmap){
-        mbimtmap = bitmap;
+        mBimtmap = bitmap;
     }
 
-    public Item(){}
 }
