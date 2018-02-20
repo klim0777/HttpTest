@@ -30,9 +30,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -42,9 +44,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView;
     private Button   getButton;
     private ListView listView;
+    private Spinner spinner;
 
     private static List<Item> array = new ArrayList<>();
     private String[] imageLinks;
@@ -56,7 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog dialog;
 
-    String url = "https://api.spacexdata.com/v2/launches?launch_year=2017";
+    private String[] years = {"2006","2007","2008","2009","2010","2011",
+                              "2012","2013","2014","2015","2016","2017",
+                              "2018"};
+
+    private String url = "https://api.spacexdata.com/v2/launches?launch_year=2017";
+    private String urlBase = "https://api.spacexdata.com/v2/launches?launch_year=";
 
     final Activity ac = this;
 
@@ -65,9 +72,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.textView);
         getButton = (Button) findViewById(R.id.getButton);
         listView = (ListView) findViewById(R.id.listView);
+        spinner = (Spinner) findViewById(R.id.spinner);
+
+        // adapter for spinner
+        ArrayAdapter<String> spinnerAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setPrompt("select year");
+        spinner.setSelection(0);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String urlAdd = String.valueOf(2006+position);
+                url = urlBase + urlAdd;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         getButton.setOnClickListener(new View.OnClickListener() {
             @Override
