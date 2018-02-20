@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public class  GetBitmapArrayTask extends AsyncTask<String, Void, Bitmap[]> {
         private Bitmap[] mbitmaps;
-        
+
         @Override
         protected Bitmap[] doInBackground(String[] url) {
             mbitmaps = new Bitmap[mImageLinks.length];

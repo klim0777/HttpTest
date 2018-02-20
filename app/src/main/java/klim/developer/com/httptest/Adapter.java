@@ -13,22 +13,22 @@ import java.util.List;
 
 public class Adapter extends BaseAdapter {
 
-    private LayoutInflater inflater;
-    private Activity activity;
-    private List<Item> items;
+    private LayoutInflater mInflater;
+    private Activity mActivity;
+    private List<Item> mItems;
 
     public Adapter(Activity activity,List<Item> items){
-        this.activity = activity;
-        this.items = items;
+        mActivity = activity;
+        mItems = items;
     }
     @Override
     public int getCount() {
-        return items.size();
+        return mItems.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return items.get(position);
+        return mItems.get(position);
     }
 
     @Override
@@ -38,11 +38,11 @@ public class Adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(inflater == null){
-            inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (mInflater == null) {
+            mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
-        if(convertView == null){
-            convertView = inflater.inflate(R.layout.custom_layout,null);
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.custom_layout,null);
         }
         TextView rocketNameView = (TextView) convertView.findViewById(R.id.tvRocketName);
         TextView launchDateView = (TextView) convertView.findViewById(R.id.tvLaunchDate);
@@ -51,7 +51,7 @@ public class Adapter extends BaseAdapter {
 
 
         // get data from items list
-        Item item = items.get(position);
+        Item item = mItems.get(position);
         // imageLink
         String imageLink = item.getImage();
         // rocketName
